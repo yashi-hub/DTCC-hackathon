@@ -1,0 +1,37 @@
+<!-- Main Dashboard Content -->
+<div class="main-content">
+  <div class="dashboard-container">
+    <h1>Welcome to the Dashboard</h1>
+    <div class="dashboard-content">
+      <p>You have successfully logged in!</p>
+      <p>Here you can manage your account and view your dashboard content.</p>
+      <p>Use the chat sidebar on the right to get help or ask questions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Chat Sidebar -->
+<div class="chat-sidebar">
+  <div class="chat-header">
+    <h3>💬 Chat Support</h3>
+  </div>
+
+  <div class="chat-messages" #chatMessages>
+    <div class="message bot" *ngFor="let message of messages">
+      <p [ngClass]="{ user: message.isUser, bot: !message.isUser }">
+        {{ message.text }}
+      </p>
+    </div>
+  </div>
+
+  <div class="chat-input-container">
+    <input
+      type="text"
+      class="chat-input"
+      [(ngModel)]="currentMessage"
+      (keypress)="handleKeyPress($event)"
+      placeholder="Type your message..."
+    />
+    <button class="send-btn" (click)="sendMessage()">Send</button>
+  </div>
+</div>
