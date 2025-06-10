@@ -4,14 +4,6 @@ import {
   ElementRef,
   AfterViewChecked,
 } from '@angular/core';
-import { TabsComponent } from '../tabs/tabs.component';
-import { AgGridModule } from 'ag-grid-angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { PerformanceComponent } from '../performance/performance.component';
-import { LeadsComponent } from '../leads/leads.component';
-import { CustomersComponent } from '../customers/customers.component';
-import { PortfolioComponent } from '../portfolio/portfolio.component';
 
 interface ChatMessage {
   text: string;
@@ -23,16 +15,10 @@ interface ChatMessage {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [TabsComponent, AgGridModule,CommonModule,FormsModule,PerformanceComponent,LeadsComponent,CustomersComponent,PortfolioComponent],
-  standalone: true,
+  standalone: false,
 })
 export class DashboardComponent implements AfterViewChecked {
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
-  selectedTab: string = 'leads';
-
-  selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
 
   messages: ChatMessage[] = [
     {
@@ -44,6 +30,9 @@ export class DashboardComponent implements AfterViewChecked {
 
   currentMessage: string = '';
   private shouldScrollToBottom = false;
+
+  // New property to control chat visibility
+  isChatOpen: boolean = false;
 
   sendMessage(): void {
     const message = this.currentMessage.trim();
@@ -78,6 +67,17 @@ export class DashboardComponent implements AfterViewChecked {
     }
   }
 
+  // New method to toggle chat visibility
+  toggleChat(): void {
+    this.isChatOpen = !this.isChatOpen;
+    if (this.isChatOpen) {
+      // Scroll to bottom when chat opens
+      setTimeout(() => {
+        this.shouldScrollToBottom = true;
+      }, 100);
+    }
+  }
+
   ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
       this.scrollToBottom();
@@ -87,8 +87,10 @@ export class DashboardComponent implements AfterViewChecked {
 
   private scrollToBottom(): void {
     try {
-      this.chatMessagesContainer.nativeElement.scrollTop =
-        this.chatMessagesContainer.nativeElement.scrollHeight;
+      if (this.chatMessagesContainer) {
+        this.chatMessagesContainer.nativeElement.scrollTop =
+          this.chatMessagesContainer.nativeElement.scrollHeight;
+      }
     } catch (err) {
       console.error('Error scrolling to bottom:', err);
     }
