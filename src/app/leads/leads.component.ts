@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface ChatMessage {
   text: string;
@@ -27,7 +29,7 @@ interface Lead {
 
 @Component({
   selector: 'app-leads',
-  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule],
+  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule],
   templateUrl: './leads.component.html',
   styleUrls: ['./leads.component.scss'],
   standalone: true,
@@ -35,7 +37,7 @@ interface Lead {
 
 export class LeadsComponent {
 
-  constructor(private router: Router, private n8nService: N8nService) { }
+  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -280,6 +282,7 @@ export class LeadsComponent {
             isUser: false,
             timestamp: new Date(),
           });
+          this.snackBar.open(response, '', { duration: 5000 });
         },
         error: (error) => {
           console.error('Error fetching data from n8n:', error);
