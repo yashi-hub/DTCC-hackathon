@@ -4,6 +4,7 @@ import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular
 import { TabsComponent } from '../tabs/tabs.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { N8nService } from '../services/n8n/n8n.service';
 
 interface ChatMessage {
   text: string;
@@ -31,6 +32,8 @@ export class PortfolioComponent {
   public pieChartPlugins = [];
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
+
+  constructor(private n8nService: N8nService) {}
 
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
 
@@ -65,15 +68,35 @@ export class PortfolioComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
+      this.n8nService.getN8nData(message).subscribe({
+        next: (response: any) => {
+          console.log('Response from n8n:', response);
+          this.messages.push({
+            text: response || 'I am not sure how to respond to that.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+        },
+        error: (error) => {
+          console.error('Error fetching data from n8n:', error);
+          this.messages.push({
+            text: 'Sorry, I encountered an error while processing your request.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        },
+      });
+
       // Simulate bot response
-      setTimeout(() => {
-        this.messages.push({
-          text: `Thanks for your message: "${message}". How else can I assist you?`,
-          isUser: false,
-          timestamp: new Date(),
-        });
-        this.shouldScrollToBottom = true;
-      }, 1000);
+      // setTimeout(() => {
+      //   this.messages.push({
+      //     text: `Thanks for your message: "${message}". How else can I assist you?`,
+      //     isUser: false,
+      //     timestamp: new Date(),
+      //   });
+      //   this.shouldScrollToBottom = true;
+      // }, 1000);
     }
   }
 

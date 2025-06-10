@@ -5,6 +5,7 @@ import { ColDef } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { N8nService } from '../services/n8n/n8n.service';
 
 interface ChatMessage {
   text: string;
@@ -23,7 +24,7 @@ interface ChatMessage {
 
 export class LeadsComponent {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private n8nService: N8nService) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -60,15 +61,35 @@ export class LeadsComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
+      this.n8nService.getN8nData(message).subscribe({
+        next: (response: any) => {
+          console.log('Response from n8n:', response);
+          this.messages.push({
+            text: response || 'I am not sure how to respond to that.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+        },
+        error: (error) => {
+          console.error('Error fetching data from n8n:', error);
+          this.messages.push({
+            text: 'Sorry, I encountered an error while processing your request.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        },
+      });
+
       // Simulate bot response
-      setTimeout(() => {
-        this.messages.push({
-          text: `Thanks for your message: "${message}". How else can I assist you?`,
-          isUser: false,
-          timestamp: new Date(),
-        });
-        this.shouldScrollToBottom = true;
-      }, 1000);
+      // setTimeout(() => {
+      //   this.messages.push({
+      //     text: `Thanks for your message: "${message}". How else can I assist you?`,
+      //     isUser: false,
+      //     timestamp: new Date(),
+      //   });
+      //   this.shouldScrollToBottom = true;
+      // }, 1000);
     }
   }
 

@@ -1,15 +1,27 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TabsComponent } from '../tabs/tabs.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClientsService } from '../services/clientsService/clients.service';
+import { N8nService } from '../services/n8n/n8n.service';
 
 interface ChatMessage {
   text: string;
   isUser: boolean;
   timestamp: Date;
+}
+
+export interface Client {
+  id: string;
+  documentType: string;
+  documentId: string;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  address: string;
 }
 
 @Component({
@@ -22,13 +34,37 @@ interface ChatMessage {
 
 })
 
-export class CustomersComponent {
+export class CustomersComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private clientsService: ClientsService, private n8nService: N8nService) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
+
+  rowData: Client[] = [];
+
+    ngOnInit(): void {
+    this.clientsService.getClientsData().subscribe({
+      next: (data) => {
+        (Array.isArray(data) ? data : []).forEach((ele: any) => {
+            let client: Client = {
+              id: ele.id || '',
+              documentType: ele.kycDetails[0]?.documentType || '--',
+              documentId: ele.kycDetails[0]?.documentId || '--',
+              fullName: ele.kycDetails[0]?.fullName || '--',
+              dateOfBirth: ele.kycDetails[0]?.dateOfBirth || '--',
+              gender: ele.kycDetails[0]?.gender || '--',
+              address: ele.kycDetails[0]?.address || '--',
+            };
+            this.rowData.push(client);
+        });
+        this.rowData = [...this.rowData];
+      },
+      error: (error) => {
+        console.error('Error fetching clients data:', error);
+      }});
+  }
 
   clientId: string = '';
 
@@ -61,15 +97,35 @@ export class CustomersComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
+      this.n8nService.getN8nData(message).subscribe({
+        next: (response: any) => {
+          console.log('Response from n8n:', response);
+          this.messages.push({
+            text: response || 'I am not sure how to respond to that.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+        },
+        error: (error) => {
+          console.error('Error fetching data from n8n:', error);
+          this.messages.push({
+            text: 'Sorry, I encountered an error while processing your request.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        },
+      });
+
       // Simulate bot response
-      setTimeout(() => {
-        this.messages.push({
-          text: `Thanks for your message: "${message}". How else can I assist you?`,
-          isUser: false,
-          timestamp: new Date(),
-        });
-        this.shouldScrollToBottom = true;
-      }, 1000);
+      // setTimeout(() => {
+      //   this.messages.push({
+      //     text: `Thanks for your message: "${message}". How else can I assist you?`,
+      //     isUser: false,
+      //     timestamp: new Date(),
+      //   });
+      //   this.shouldScrollToBottom = true;
+      // }, 1000);
     }
   }
 
@@ -126,26 +182,26 @@ export class CustomersComponent {
     { headerName: 'Address', field: 'address', cellStyle: { display: 'flex', alignItems: "center" } },
   ];
 
-  rowData = [
-    {
-      id: 'CLT-456', //make it hyperlink then go to portfolio
-      documentType: 'AADHAR',
-      documentId: '123456789001',
-      fullName: 'John Doe',
-      dateOfBirth: '01-01-1990',
-      gender: 'Male',
-      address: 'Kharadi, Pune, India'
-    },
-    {
-      id: 'CLT-123',
-      documentType: 'AADHAR',
-      documentId: '123456789001',
-      fullName: 'John Doe',
-      dateOfBirth: '01-01-1990',
-      gender: 'Male',
-      address: 'Kharadi, Pune, India'
-    }
-  ];
+  // rowData = [
+  //   {
+  //     id: 'CLT-456', //make it hyperlink then go to portfolio
+  //     documentType: 'AADHAR',
+  //     documentId: '123456789001',
+  //     fullName: 'John Doe',
+  //     dateOfBirth: '01-01-1990',
+  //     gender: 'Male',
+  //     address: 'Kharadi, Pune, India'
+  //   },
+  //   {
+  //     id: 'CLT-123',
+  //     documentType: 'AADHAR',
+  //     documentId: '123456789001',
+  //     fullName: 'John Doe',
+  //     dateOfBirth: '01-01-1990',
+  //     gender: 'Male',
+  //     address: 'Kharadi, Pune, India'
+  //   }
+  // ];
 
   // onGridReady(params: any) {
   //   params.api.sizeColumnsToFit();
