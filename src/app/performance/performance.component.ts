@@ -59,35 +59,15 @@ export class PerformanceComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
-      this.n8nService.getN8nData(message).subscribe({
-        next: (response: any) => {
-          console.log('Response from n8n:', response);
-          this.messages.push({
-            text: response || 'I am not sure how to respond to that.',
-            isUser: false,
-            timestamp: new Date(),
-          });
-        },
-        error: (error) => {
-          console.error('Error fetching data from n8n:', error);
-          this.messages.push({
-            text: 'Sorry, I encountered an error while processing your request.',
-            isUser: false,
-            timestamp: new Date(),
-          });
-          this.shouldScrollToBottom = true;
-        },
-      });
-
       // Simulate bot response
-      // setTimeout(() => {
-      //   this.messages.push({
-      //     text: `Thanks for your message: "${message}". How else can I assist you?`,
-      //     isUser: false,
-      //     timestamp: new Date(),
-      //   });
-      //   this.shouldScrollToBottom = true;
-      // }, 1000);
+      setTimeout(() => {
+        this.messages.push({
+          text: `Thanks for your message: "${message}". How else can I assist you?`,
+          isUser: false,
+          timestamp: new Date(),
+        });
+        this.shouldScrollToBottom = true;
+      }, 1000);
     }
   }
 
