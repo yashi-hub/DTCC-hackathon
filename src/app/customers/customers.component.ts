@@ -19,12 +19,13 @@ export class CustomersComponent {
     { headerName: 'Full Name', field: 'fullName' },
     { headerName: 'Date of Birth', field: 'dateOfBirth' },
     { headerName: 'Gender', field: 'gender' },
-    { headerName: 'Address', field: 'address' }
+    { headerName: 'Address', field: 'address' },
+    { headerName: 'KYC Status', field: 'kyc_status' }
   ];
 
   rowData = [
     {
-      id: 'CLT-456',
+      id: 'CLT-456', //make it hyperlink then go to portfolio
       documentType: 'AADHAR',
       documentId: '123456789001',
       fullName: 'John Doe',

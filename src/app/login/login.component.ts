@@ -25,14 +25,14 @@ export class LoginComponent {
 
     // Simulate API call delay
     setTimeout(() => {
-      if (
-        this.username === this.mockCredentials.username &&
-        this.password === this.mockCredentials.password
-      ) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.errorMessage = 'Invalid credentials. Please try again.';
-      }
+      // if (
+      //   this.username === this.mockCredentials.username &&
+      //   this.password === this.mockCredentials.password
+      // ) {
+      this.router.navigate(['/dashboard']);
+      // } else {
+      //   this.errorMessage = 'Invalid credentials. Please try again.';
+      // }
       this.isLoading = false;
     }, 1000);
   }

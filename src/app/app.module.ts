@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +11,6 @@ import { CommonModule } from '@angular/common';
   declarations: [
     AppComponent,
     LoginComponent,
-    // DashboardComponent,
     LoginComponent,
   ],
   imports: [
@@ -20,7 +18,7 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     AppRoutingModule,
     AgGridModule,
-    CommonModule
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
