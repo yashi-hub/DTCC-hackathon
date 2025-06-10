@@ -1,6 +1,6 @@
 <nav class="tabs">
-  <a [routerLink]="'/leads'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Leads</a>
-  <a [routerLink]="'/customers'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Customers</a>
-  <a [routerLink]="'/portfolio'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Portfolio</a>
-  <a [routerLink]="'/performance'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Performance</a>
+  <a (click)="select('leads')" [class.active]="selectedTab === 'leads'">Leads</a>
+  <a (click)="select('customers')" [class.active]="selectedTab === 'customers'">Customers</a>
+  <a (click)="select('portfolio')" [class.active]="selectedTab === 'portfolio'">Portfolio</a>
+  <a (click)="select('performance')" [class.active]="selectedTab === 'performance'">Performance</a>
 </nav>

@@ -3,7 +3,7 @@ import { TabsComponent } from '../tabs/tabs.component';
 
 @Component({
   selector: 'app-portfolio',
-  imports: [TabsComponent],
+  imports: [],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss'],
   standalone: true,

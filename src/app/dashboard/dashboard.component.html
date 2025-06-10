@@ -1,11 +1,22 @@
 <!-- Main Dashboard Content -->
 <div class="main-content">
+  <app-tabs (tabSelected)="selectTab($event)" [selectedTab]="selectedTab"></app-tabs>
+
   <div class="dashboard-container">
-    <h1>Welcome to the Dashboard</h1>
-    <div class="dashboard-content">
-      <p>You have successfully logged in!</p>
-      <p>Here you can manage your account and view your dashboard content.</p>
-      <p>Use the chat sidebar on the right to get help or ask questions.</p>
+
+    <!-- <div class="dashboard-content"> -->
+      <div *ngIf="selectedTab === 'leads'">
+        <app-leads></app-leads>
+      </div>
+      <div *ngIf="selectedTab === 'customers'">
+        <app-customers></app-customers>
+      </div>
+      <div *ngIf="selectedTab === 'portfolio'">
+        <app-portfolio></app-portfolio>
+      </div>
+      <div *ngIf="selectedTab === 'performance'">
+        <app-performance></app-performance>
+      <!-- </div> -->
     </div>
   </div>
 </div>

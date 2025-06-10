@@ -1,1 +1,50 @@
- 
+:host ::ng-deep .ag-theme-alpine {
+    width: auto !important;
+    min-width: 0;
+    max-width: none;
+}
+
+.ag-grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 0;
+    background: transparent;
+}
+
+.custom-ag-theme {
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(25, 118, 210, 0.10);
+    overflow: hidden;
+    background: #fff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-header {
+    background: #1976d2;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-row {
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-row:hover {
+    background: #e3f2fd;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-root-wrapper {
+    border: none !important;
+    border-radius: 16px;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-cell {
+    padding: 8px 12px;
+}
+
+:host ::ng-deep .ag-theme-alpine .ag-header-cell {
+    padding: 10px 12px;
+}

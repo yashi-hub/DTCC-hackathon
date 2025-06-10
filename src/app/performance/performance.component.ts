@@ -3,7 +3,7 @@ import { TabsComponent } from '../tabs/tabs.component';
 
 @Component({
   selector: 'app-performance',
-  imports: [TabsComponent],
+  imports: [],
   templateUrl: './performance.component.html',
   styleUrls: ['./performance.component.scss'],
   standalone: true,

@@ -1,3 +1,7 @@
-<app-tabs></app-tabs>
-
-<p>Customers works!</p> 
+<ag-grid-angular
+  style="width: auto; min-width: 300px; height: 400px;"
+  class="ag-theme-alpine custom-ag-theme"
+  [rowData]="rowData"
+  [columnDefs]="columnDefs"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular> 

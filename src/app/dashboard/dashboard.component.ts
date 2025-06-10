@@ -4,6 +4,14 @@ import {
   ElementRef,
   AfterViewChecked,
 } from '@angular/core';
+import { TabsComponent } from '../tabs/tabs.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PerformanceComponent } from '../performance/performance.component';
+import { LeadsComponent } from '../leads/leads.component';
+import { CustomersComponent } from '../customers/customers.component';
+import { PortfolioComponent } from '../portfolio/portfolio.component';
 
 interface ChatMessage {
   text: string;
@@ -15,10 +23,16 @@ interface ChatMessage {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  standalone: false,
+  imports: [TabsComponent, AgGridModule,CommonModule,FormsModule,PerformanceComponent,LeadsComponent,CustomersComponent,PortfolioComponent],
+  standalone: true,
 })
 export class DashboardComponent implements AfterViewChecked {
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
+  selectedTab: string = 'leads';
+
+  selectTab(tab: string) {
+    this.selectedTab = tab;
+  }
 
   messages: ChatMessage[] = [
     {
