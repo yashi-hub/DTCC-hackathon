@@ -29,7 +29,7 @@ export class LoginComponent {
       //   this.username === this.mockCredentials.username &&
       //   this.password === this.mockCredentials.password
       // ) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/leads']);
       // } else {
       //   this.errorMessage = 'Invalid credentials. Please try again.';
       // }

@@ -1,6 +1,6 @@
 <nav class="tabs">
-  <a (click)="select('leads')" [class.active]="selectedTab === 'leads'">Leads</a>
-  <a (click)="select('customers')" [class.active]="selectedTab === 'customers'">Customers</a>
-  <a (click)="select('portfolio')" [class.active]="selectedTab === 'portfolio'">Portfolio</a>
-  <a (click)="select('performance')" [class.active]="selectedTab === 'performance'">Performance</a>
+  <a routerLink="/leads" routerLinkActive="active">Leads</a>
+  <a routerLink="/customers" routerLinkActive="active">Customers</a>
+  <a routerLink="/portfolio" routerLinkActive="active">Portfolio</a>
+  <a routerLink="/performance" routerLinkActive="active">Performance</a>
 </nav>

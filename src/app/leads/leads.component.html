@@ -1,2 +1,58 @@
+<div class="dashboard-flex">
 
-<p>Leads works!</p> 
+  <div class="main-content" [ngClass]="{ 'chat-open': isChatOpen, 'chat-closed': !isChatOpen }">
+    <div class="tabs-center">
+      <app-tabs></app-tabs>
+    </div>
+    <p>Lead table comes here</p>
+  </div>
+
+  <div class="chat-sidebar" [ngClass]="{ 'chat-open': isChatOpen, 'chat-closed': !isChatOpen }">
+    <div class="chat-header">
+      <h3>💬 Chat Support</h3>
+      <button class="close-chat-btn" (click)="toggleChat()" title="Close Chat">×</button>
+    </div>
+
+    <div class="chat-messages" #chatMessages>
+      <div class="message" *ngFor="let message of messages">
+        <p [ngClass]="{ user: message.isUser, bot: !message.isUser }">
+          {{ message.text }}
+        </p>
+      </div>
+    </div>
+
+    <div class="chat-input-container">
+      <input type="text" class="chat-input" [(ngModel)]="currentMessage" (keypress)="handleKeyPress($event)"
+        placeholder="Type your message..." />
+      <button class="send-btn" (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chat Toggle Button (when chat is closed) -->
+<button class="chat-toggle-btn" *ngIf="!isChatOpen" (click)="toggleChat()" title="Open Chat Support">
+  💬
+</button>
+
+<!-- Chat Sidebar -->
+<div class="chat-sidebar" [ngClass]="{ 'chat-open': isChatOpen, 'chat-closed': !isChatOpen }">
+  <div class="chat-header">
+    <h3>💬 Chat Support</h3>
+    <button class="close-chat-btn" (click)="toggleChat()" title="Close Chat">×</button>
+  </div>
+
+  <div class="chat-messages" #chatMessages>
+    <div class="message" *ngFor="let message of messages">
+      <p [ngClass]="{ user: message.isUser, bot: !message.isUser }">
+        {{ message.text }}
+      </p>
+    </div>
+  </div>
+
+  <div class="chat-input-container">
+    <input type="text" class="chat-input" [(ngModel)]="currentMessage" (keypress)="handleKeyPress($event)"
+      placeholder="Type your message..." />
+    <button class="send-btn" (click)="sendMessage()">Send</button>
+  </div>
+</div>

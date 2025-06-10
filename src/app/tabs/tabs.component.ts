@@ -9,10 +9,5 @@ import { RouterModule } from '@angular/router';
   imports: [RouterModule],
 })
 export class TabsComponent {
-  @Input() selectedTab: string = 'leads';
-  @Output() tabSelected = new EventEmitter<string>();
 
-  select(tab: string) {
-    this.tabSelected.emit(tab);
-  }
 }
