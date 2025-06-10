@@ -13,14 +13,13 @@ import { ColDef } from 'ag-grid-community';
 })
 export class CustomersComponent {
   columnDefs: ColDef[] = [
-    { headerName: 'Client ID', field: 'id' },
-    { headerName: 'Document Type', field: 'documentType' },
-    { headerName: 'Document ID', field: 'documentId' },
-    { headerName: 'Full Name', field: 'fullName' },
-    { headerName: 'Date of Birth', field: 'dateOfBirth' },
-    { headerName: 'Gender', field: 'gender' },
-    { headerName: 'Address', field: 'address' },
-    { headerName: 'KYC Status', field: 'kyc_status' }
+    { headerName: 'Client ID', field: 'id', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Document Type', field: 'documentType', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Document ID', field: 'documentId', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Full Name', field: 'fullName', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Date of Birth', field: 'dateOfBirth', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Gender', field: 'gender', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Address', field: 'address', headerComponentParams: { style: { padding: '10px' } } },
   ];
 
   rowData = [
@@ -53,4 +52,17 @@ export class CustomersComponent {
     });
     params.columnApi.autoSizeColumns(allColumnIds, false);
   }
+
+  defaultColDef = {
+    flex: 1,
+  };
+
+  statusBar = {
+    statusPanels: [
+      {
+        statusPanel: 'agTotalAndFilteredRowCountComponent',
+        align: 'left',
+      },
+    ],
+  };
 } 
