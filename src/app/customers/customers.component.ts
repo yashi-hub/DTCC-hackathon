@@ -13,13 +13,13 @@ import { ColDef } from 'ag-grid-community';
 })
 export class CustomersComponent {
   columnDefs: ColDef[] = [
-    { headerName: 'Client ID', field: 'id', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Document Type', field: 'documentType', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Document ID', field: 'documentId', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Full Name', field: 'fullName', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Date of Birth', field: 'dateOfBirth', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Gender', field: 'gender', headerComponentParams: { style: { padding: '10px' } } },
-    { headerName: 'Address', field: 'address', headerComponentParams: { style: { padding: '10px' } } },
+    { headerName: 'Client ID', field: 'id', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Document Type', field: 'documentType', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Document ID', field: 'documentId', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Full Name', field: 'fullName', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Date of Birth', field: 'dateOfBirth', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Gender', field: 'gender', cellStyle: { display: 'flex',alignItems:"center" } },
+    { headerName: 'Address', field: 'address', cellStyle: { display: 'flex',alignItems:"center" } },
   ];
 
   rowData = [
