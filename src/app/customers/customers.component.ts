@@ -22,6 +22,7 @@ export interface Client {
   dateOfBirth: string;
   gender: string;
   address: string;
+  status: string
 }
 
 @Component({
@@ -56,6 +57,7 @@ export class CustomersComponent implements OnInit {
               dateOfBirth: ele.kycDetails[0]?.dateOfBirth || '--',
               gender: ele.kycDetails[0]?.gender || '--',
               address: ele.kycDetails[0]?.address || '--',
+              status: ele.kycDetails[0]?.status || '--',
             };
             this.rowData.push(client);
         });
@@ -180,6 +182,11 @@ export class CustomersComponent implements OnInit {
     { headerName: 'Date of Birth', field: 'dateOfBirth', cellStyle: { display: 'flex', alignItems: "center" } },
     { headerName: 'Gender', field: 'gender', cellStyle: { display: 'flex', alignItems: "center" } },
     { headerName: 'Address', field: 'address', cellStyle: { display: 'flex', alignItems: "center" } },
+    {
+      headerName: 'Status',
+      field: 'status',
+      cellStyle: { display: 'flex', alignItems: "center" }
+    }
   ];
 
   // rowData = [
