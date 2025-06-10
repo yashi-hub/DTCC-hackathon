@@ -1,6 +1,6 @@
 <div class="dashboard-flex">
 
-  <div class="main-content">
+  <div class="main-content" [ngClass]="{ 'chat-open': isChatOpen, 'chat-closed': !isChatOpen }">
     <div class="tabs-center">
       <app-tabs (tabSelected)="selectTab($event)" [selectedTab]="selectedTab"></app-tabs>
     </div>

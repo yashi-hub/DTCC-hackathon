@@ -229,9 +229,17 @@
   min-width: 0;
   height: 100vh;
   overflow-y: auto;
-  // background: #f9f9f9;
-  transition: margin-right 0.3s;
+  transition: width 0.3s ease;
 }
+
+.main-content.chat-closed {
+  width: 99%;
+}
+
+.main-content.chat-open {
+  width: auto;
+}
+
 
 .chat-sidebar {
   width: 350px;
