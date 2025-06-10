@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface ChatMessage {
   text: string;
@@ -27,7 +29,7 @@ interface Lead {
 
 @Component({
   selector: 'app-leads',
-  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule],
+  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule],
   templateUrl: './leads.component.html',
   styleUrls: ['./leads.component.scss'],
   standalone: true,
@@ -35,7 +37,7 @@ interface Lead {
 
 export class LeadsComponent {
 
-  constructor(private router: Router, private n8nService: N8nService) { }
+  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -192,7 +194,7 @@ export class LeadsComponent {
       lead_type: "prospect",
       lead_generation_source: "website",
       lead_status: "new",
-      lead_contact_number: "48736473",
+      lead_contact_number: "919930866565",
       selected: false
     },
     {
@@ -203,7 +205,7 @@ export class LeadsComponent {
       lead_type: "qualified",
       lead_generation_source: "referral",
       lead_status: "contacted",
-      lead_contact_number: "12345678",
+      lead_contact_number: "919930866565",
       selected: false
     },
     {
@@ -214,7 +216,7 @@ export class LeadsComponent {
       lead_type: "hot",
       lead_generation_source: "social_media",
       lead_status: "meeting_scheduled",
-      lead_contact_number: "87654321",
+      lead_contact_number: "919930866565",
       selected: false
     },
     {
@@ -225,7 +227,7 @@ export class LeadsComponent {
       lead_type: "prospect",
       lead_generation_source: "linkedin",
       lead_status: "new",
-      lead_contact_number: "55512345",
+      lead_contact_number: "919930866565",
       selected: false
     },
     {
@@ -236,7 +238,7 @@ export class LeadsComponent {
       lead_type: "qualified",
       lead_generation_source: "event",
       lead_status: "contacted",
-      lead_contact_number: "99887766",
+      lead_contact_number: "917742862567",
       selected: false
     }
   ];
@@ -266,10 +268,32 @@ export class LeadsComponent {
       const selectedNames = this.selectedLeads.map(lead => 
         `${lead.lead_first_name} ${lead.lead_last_name}`
       ).join(', ');
+
+      const selectedNumber = this.selectedLeads.map(lead => lead.lead_contact_number).join(', ');
       
       alert(`Triggering KYC for: ${selectedNames}`);
       
       // Add KYC logic here
+      this.n8nService.getN8nData(selectedNumber).subscribe({
+        next: (response: any) => {
+          console.log('Response from n8n:', response);
+          this.messages.push({
+            text: response || 'I am not sure how to respond to that.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.snackBar.open(response, '', { duration: 5000 });
+        },
+        error: (error) => {
+          console.error('Error fetching data from n8n:', error);
+          this.messages.push({
+            text: 'Sorry, I encountered an error while processing your request.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        },
+      });
       console.log('Triggering KYC for selected leads:', this.selectedLeads);
       
       // Add a chat message about the KYC trigger
@@ -302,35 +326,15 @@ export class LeadsComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
-      this.n8nService.getN8nData(message).subscribe({
-        next: (response: any) => {
-          console.log('Response from n8n:', response);
-          this.messages.push({
-            text: response || 'I am not sure how to respond to that.',
-            isUser: false,
-            timestamp: new Date(),
-          });
-        },
-        error: (error) => {
-          console.error('Error fetching data from n8n:', error);
-          this.messages.push({
-            text: 'Sorry, I encountered an error while processing your request.',
-            isUser: false,
-            timestamp: new Date(),
-          });
-          this.shouldScrollToBottom = true;
-        },
-      });
-
       // Simulate bot response
-      // setTimeout(() => {
-      //   this.messages.push({
-      //     text: `Thanks for your message: "${message}". How else can I assist you?`,
-      //     isUser: false,
-      //     timestamp: new Date(),
-      //   });
-      //   this.shouldScrollToBottom = true;
-      // }, 1000);
+      setTimeout(() => {
+        this.messages.push({
+          text: `Thanks for your message: "${message}". How else can I assist you?`,
+          isUser: false,
+          timestamp: new Date(),
+        });
+        this.shouldScrollToBottom = true;
+      }, 1000);
     }
   }
 
