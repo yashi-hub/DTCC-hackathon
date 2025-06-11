@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TabsComponent } from '../tabs/tabs.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LeadsServiceTs } from '../services/leadsService/leads.service.ts';
 
 interface ChatMessage {
   text: string;
@@ -35,9 +36,36 @@ interface Lead {
   standalone: true,
 })
 
-export class LeadsComponent {
+export class LeadsComponent implements OnInit {
 
-  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar) { }
+  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar, private leadsServiceTs: LeadsServiceTs) { }
+  
+    rowData: Lead[] = [];
+
+  ngOnInit(): void {
+    this.leadsServiceTs.getLeadsData().subscribe({
+      next: (data) => {
+        (Array.isArray(data) ? data : []).forEach((ele: any) => {
+          let lead: Lead = {
+            lead_first_name: ele.lead_first_name || '--',
+            lead_last_name: ele.lead_last_name || '--',
+            lead_company_name: ele.lead_company_name || '--',
+            lead_official_title: ele.lead_official_title || '--',
+            lead_type: ele.lead_type || '--',
+            lead_generation_source: ele.lead_generation_source || '--',
+            lead_status: ele.lead_status || '--',
+            lead_contact_number: ele.lead_contact_number || '--',
+          };
+          this.rowData.push(lead);
+        });
+        this.rowData = [...this.rowData];
+      },
+      error: (error) => {
+        console.error('Error fetching leads data:', error);
+        this.snackBar.open('Failed to load leads data', '', { duration: 3000 });
+      }
+    });
+  }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -184,64 +212,7 @@ export class LeadsComponent {
     }
   ];
 
-  // Sample data with more leads for testing
-  rowData: Lead[] = [
-    {
-      lead_first_name: "John",
-      lead_last_name: "Doe",
-      lead_company_name: "ACME Corp",
-      lead_official_title: "Software Engineer",
-      lead_type: "prospect",
-      lead_generation_source: "website",
-      lead_status: "new",
-      lead_contact_number: "919930866565",
-      selected: false
-    },
-    {
-      lead_first_name: "Jane",
-      lead_last_name: "Smith",
-      lead_company_name: "Tech Solutions",
-      lead_official_title: "Product Manager",
-      lead_type: "qualified",
-      lead_generation_source: "referral",
-      lead_status: "contacted",
-      lead_contact_number: "919930866565",
-      selected: false
-    },
-    {
-      lead_first_name: "Bob",
-      lead_last_name: "Johnson",
-      lead_company_name: "Startup Inc",
-      lead_official_title: "CTO",
-      lead_type: "hot",
-      lead_generation_source: "social_media",
-      lead_status: "meeting_scheduled",
-      lead_contact_number: "919930866565",
-      selected: false
-    },
-    {
-      lead_first_name: "Alice",
-      lead_last_name: "Williams",
-      lead_company_name: "Digital Agency",
-      lead_official_title: "Marketing Director",
-      lead_type: "prospect",
-      lead_generation_source: "linkedin",
-      lead_status: "new",
-      lead_contact_number: "919930866565",
-      selected: false
-    },
-    {
-      lead_first_name: "Charlie",
-      lead_last_name: "Brown",
-      lead_company_name: "Finance Corp",
-      lead_official_title: "Financial Analyst",
-      lead_type: "qualified",
-      lead_generation_source: "event",
-      lead_status: "contacted",
-      lead_contact_number: "917742862567",
-      selected: false
-    }
-  ];
+
 
   // Default column definitions
   defaultColDef: ColDef = {
