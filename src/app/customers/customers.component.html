@@ -4,6 +4,11 @@
       <app-tabs></app-tabs>
     </div>
 
+    <div *ngIf="loading">
+      <app-loader></app-loader>
+    </div>
+
+    <div *ngIf="!loading">
     <div class="grid-container">
       <ag-grid-angular
         class="ag-theme-quartz"
@@ -14,6 +19,7 @@
         [gridOptions]="{ rowHeight: 50, headerHeight: 50 }"
         (gridReady)="onGridReady($event)">
       </ag-grid-angular>
+    </div>
     </div>
   </div>
 

@@ -8,7 +8,9 @@ import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MessageService } from '../services/messageService/message.service';
 import { LeadsServiceTs } from '../services/leadsService/leads.service.ts';
+import { LoaderComponent } from '../loader/loader.component';
 
 interface ChatMessage {
   text: string;
@@ -30,7 +32,7 @@ interface Lead {
 
 @Component({
   selector: 'app-leads',
-  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule],
+  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule, LoaderComponent],
   templateUrl: './leads.component.html',
   styleUrls: ['./leads.component.scss'],
   standalone: true,
@@ -38,11 +40,14 @@ interface Lead {
 
 export class LeadsComponent implements OnInit {
 
-  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar, private leadsServiceTs: LeadsServiceTs) { }
+  constructor(private router: Router, private n8nService: N8nService, private snackBar: MatSnackBar, private leadsServiceTs: LeadsServiceTs, private messageService: MessageService) { }
   
     rowData: Lead[] = [];
+    loading: boolean = false;
+
 
   ngOnInit(): void {
+    this.loading = true; 
     this.leadsServiceTs.getLeadsData().subscribe({
       next: (data) => {
         (Array.isArray(data) ? data : []).forEach((ele: any) => {
@@ -59,10 +64,12 @@ export class LeadsComponent implements OnInit {
           this.rowData.push(lead);
         });
         this.rowData = [...this.rowData];
+        this.loading = false; 
       },
       error: (error) => {
         console.error('Error fetching leads data:', error);
         this.snackBar.open('Failed to load leads data', '', { duration: 3000 });
+        this.loading=false
       }
     });
   }
@@ -98,9 +105,9 @@ export class LeadsComponent implements OnInit {
       resizable: false,
       sortable: false,
       filter: false,
-      cellStyle: { 
-        display: 'flex', 
-        alignItems: 'center', 
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         padding: '8px'
       }
@@ -236,43 +243,33 @@ export class LeadsComponent implements OnInit {
   // Trigger KYC function
   triggerKYC(): void {
     if (this.selectedLeads.length > 0) {
-      const selectedNames = this.selectedLeads.map(lead => 
+      const selectedNames = this.selectedLeads.map(lead =>
         `${lead.lead_first_name} ${lead.lead_last_name}`
       ).join(', ');
 
       const selectedNumber = this.selectedLeads.map(lead => lead.lead_contact_number).join(', ');
-      
+
       alert(`Triggering KYC for: ${selectedNames}`);
-      
+
       // Add KYC logic here
       this.n8nService.getN8nData(selectedNumber).subscribe({
         next: (response: any) => {
           console.log('Response from n8n:', response);
-          this.messages.push({
-            text: response || 'I am not sure how to respond to that.',
-            isUser: false,
-            timestamp: new Date(),
-          });
           this.snackBar.open(response, '', { duration: 5000 });
         },
         error: (error) => {
           console.error('Error fetching data from n8n:', error);
-          this.messages.push({
-            text: 'Sorry, I encountered an error while processing your request.',
-            isUser: false,
-            timestamp: new Date(),
-          });
           this.shouldScrollToBottom = true;
         },
       });
       console.log('Triggering KYC for selected leads:', this.selectedLeads);
-      
-      // Add a chat message about the KYC trigger
-      this.messages.push({
-        text: `KYC process initiated for ${this.selectedLeads.length} lead(s): ${selectedNames}`,
-        isUser: false,
-        timestamp: new Date(),
-      });
+
+      // // Add a chat message about the KYC trigger
+      // this.messages.push({
+      //   text: `KYC process initiated for ${this.selectedLeads.length} lead(s): ${selectedNames}`,
+      //   isUser: false,
+      //   timestamp: new Date(),
+      // });
       this.shouldScrollToBottom = true;
     }
   }
@@ -286,28 +283,36 @@ export class LeadsComponent implements OnInit {
     const message = this.currentMessage.trim();
 
     if (message) {
-      // Add user message
       this.messages.push({
         text: message,
         isUser: true,
         timestamp: new Date(),
       });
 
-      // Clear input
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
-      // Simulate bot response
-      setTimeout(() => {
-        this.messages.push({
-          text: `Thanks for your message: "${message}". How else can I assist you?`,
-          isUser: false,
-          timestamp: new Date(),
-        });
-        this.shouldScrollToBottom = true;
-      }, 1000);
+      this.messageService.sendMessageToApi(message).subscribe({
+        next: (response: string) => {
+          this.messages.push({
+            text: response,
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        },
+        error: (error) => {
+          this.messages.push({
+            text: `An error occurred: ${error.message}`,
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+        }
+      });
     }
   }
+
 
   handleKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter') {

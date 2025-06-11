@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientsService } from '../services/clientsService/clients.service';
 import { N8nService } from '../services/n8n/n8n.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 interface ChatMessage {
   text: string;
@@ -27,8 +28,7 @@ export interface Client {
 
 @Component({
   selector: 'app-customers',
-  imports: [TabsComponent, AgGridModule, CommonModule, FormsModule, AgGridModule],
-
+  imports: [TabsComponent, AgGridModule, CommonModule, FormsModule, AgGridModule, LoaderComponent],
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
   standalone: true,
@@ -44,24 +44,27 @@ export class CustomersComponent implements OnInit {
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
 
   rowData: Client[] = [];
+  loading: boolean = false;
 
-    ngOnInit(): void {
+  ngOnInit(): void {
+    this.loading = true; 
     this.clientsService.getClientsData().subscribe({
       next: (data) => {
         (Array.isArray(data) ? data : []).forEach((ele: any) => {
-            let client: Client = {
-              id: ele.id || '',
-              documentType: ele.kycDetails[0]?.documentType || '--',
-              documentId: ele.kycDetails[0]?.documentId || '--',
-              fullName: ele.kycDetails[0]?.fullName || '--',
-              dateOfBirth: ele.kycDetails[0]?.dateOfBirth || '--',
-              gender: ele.kycDetails[0]?.gender || '--',
-              address: ele.kycDetails[0]?.address || '--',
-              status: ele.kycDetails[0]?.status || '--',
-            };
-            this.rowData.push(client);
+          let client: Client = {
+            id: ele.id || '',
+            documentType: ele.kycDetails[0]?.documentType || '--',
+            documentId: ele.kycDetails[0]?.documentId || '--',
+            fullName: ele.kycDetails[0]?.fullName || '--',
+            dateOfBirth: ele.kycDetails[0]?.dateOfBirth || '--',
+            gender: ele.kycDetails[0]?.gender || '--',
+            address: ele.kycDetails[0]?.address || '--',
+            status: ele.kycDetails[0]?.status || '--',
+          };
+          this.rowData.push(client);
         });
         this.rowData = [...this.rowData];
+        this.loading = false; 
       },
       error: (error) => {
         console.error('Error fetching clients data:', error);
