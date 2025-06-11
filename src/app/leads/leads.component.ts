@@ -46,34 +46,41 @@ export class LeadsComponent implements OnInit {
     rowData: Lead[] = [];
     loading: boolean = false;
 
+  private loadLeadsData(): void {
+  this.loading = true;
+  this.rowData = []; // Clear current data
+
+  this.leadsServiceTs.getLeadsData().subscribe({
+    next: (data) => {
+      (Array.isArray(data) ? data : []).forEach((ele: any) => {
+        let lead: Lead = {
+          lead_first_name: ele.lead_first_name || '--',
+          lead_last_name: ele.lead_last_name || '--',
+          lead_company_name: ele.lead_company_name || '--',
+          lead_official_title: ele.lead_official_title || '--',
+          lead_type: ele.lead_type || '--',
+          lead_generation_source: ele.lead_generation_source || '--',
+          lead_status: ele.lead_status || '--',
+          lead_contact_number: ele.lead_contact_number || '--',
+        };
+        this.rowData.push(lead);
+      });
+      this.rowData = [...this.rowData];
+      this.loading = false;
+    },
+    error: (error) => {
+      console.error('Error fetching leads data:', error);
+      this.snackBar.open('Failed to load leads data', '', { duration: 3000 });
+      this.loading = false;
+    }
+  });
+}
+
 
   ngOnInit(): void {
-    this.loading = true; 
-    this.leadsServiceTs.getLeadsData().subscribe({
-      next: (data) => {
-        (Array.isArray(data) ? data : []).forEach((ele: any) => {
-          let lead: Lead = {
-            lead_first_name: ele.lead_first_name || '--',
-            lead_last_name: ele.lead_last_name || '--',
-            lead_company_name: ele.lead_company_name || '--',
-            lead_official_title: ele.lead_official_title || '--',
-            lead_type: ele.lead_type || '--',
-            lead_generation_source: ele.lead_generation_source || '--',
-            lead_status: ele.lead_status || '--',
-            lead_contact_number: ele.lead_contact_number || '--',
-          };
-          this.rowData.push(lead);
-        });
-        this.rowData = [...this.rowData];
-        this.loading = false; 
-      },
-      error: (error) => {
-        console.error('Error fetching leads data:', error);
-        this.snackBar.open('Failed to load leads data', '', { duration: 3000 });
-        this.loading=false
-      }
-    });
-  }
+  this.loadLeadsData();
+}
+
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -256,6 +263,7 @@ export class LeadsComponent implements OnInit {
         next: (response: any) => {
           console.log('Response from n8n:', response);
           this.snackBar.open(response, '', { duration: 5000 });
+          this.loadLeadsData();
         },
         error: (error) => {
           console.error('Error fetching data from n8n:', error);
