@@ -9,11 +9,32 @@
         {{ message.text }}
       </p>
     </div>
+    <!-- Loading indicator -->
+    <div class="message" *ngIf="loading">
+      <p class="bot typing">
+        <span class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        Typing...
+      </p>
+    </div>
   </div>
   <div class="chat-input-container">
-    <input type="text" class="chat-input" [(ngModel)]="currentMessage" (keypress)="handleKeyPress($event)"
-      placeholder="Type your message..." />
-    <button class="send-btn" (click)="sendMessage()">Send</button>
+    <input 
+      type="text" 
+      class="chat-input" 
+      [(ngModel)]="currentMessage" 
+      (keypress)="handleKeyPress($event)"
+      placeholder="Type your message..." 
+      [disabled]="loading" />
+    <button 
+      class="send-btn" 
+      (click)="sendMessage()" 
+      [disabled]="loading || !currentMessage.trim()">
+      {{ loading ? 'Sending...' : 'Send' }}
+    </button>
   </div>
 </div>
 

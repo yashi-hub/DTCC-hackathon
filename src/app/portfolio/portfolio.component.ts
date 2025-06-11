@@ -1,11 +1,10 @@
 import { ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
-import { Component, ElementRef, EventEmitter, Output, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild, OnInit, AfterViewChecked } from '@angular/core';
 import { TabsComponent } from '../tabs/tabs.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
-import { ChatComponent } from '../chat/chat.component';
 import { CurrentPortfolioService, CurrentPositionsResponseContent } from '../services/current-portfolio/current-portfolio.service';
 
 interface ChatMessage {
@@ -19,7 +18,6 @@ interface PositionTableData {
   exchange: string;
   quantity: number;
   average_price: number;
-  close_price: number;
   last_price: number;
   pnl: number;
   buy_quantity: number;
@@ -28,13 +26,13 @@ interface PositionTableData {
 
 @Component({
   selector: 'app-portfolio',
-  imports: [TabsComponent, CommonModule, FormsModule,NgChartsModule,ChatComponent],
+  imports: [TabsComponent, CommonModule, FormsModule, NgChartsModule],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss'],
   standalone: true,
 })
 
-export class PortfolioComponent implements OnInit {
+export class PortfolioComponent implements OnInit, AfterViewChecked {
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: false,
   };
@@ -84,28 +82,57 @@ export class PortfolioComponent implements OnInit {
     this.currentPortfolioService.getCurrentPositions().subscribe({
       next: (response) => {
         try {
-          // Parse the output string to extract JSON
-          const outputString = response.output;
-          const jsonString = outputString.replace(/^json\n/, '');
-          const parsedData: CurrentPositionsResponseContent = JSON.parse(jsonString);
+          console.log('Raw API response:', response);
           
-          // Map the net positions to table data format
+          // Handle the case where response is an array
+          let outputString = '';
+          if (Array.isArray(response) && response.length > 0 && response[0].output) {
+            outputString = response[0].output;
+          } else if (response && typeof response === 'object' && 'output' in response) {
+            outputString = (response as any).output;
+          } else {
+            throw new Error('Unexpected response format');
+          }
+          
+          console.log('Output string:', outputString);
+          
+          // Handle both old format (json\n{...}) and new format (```json\n{...}\n```)
+          let jsonString = '';
+          
+          if (outputString.startsWith('```json\n')) {
+            // New format with markdown code blocks
+            jsonString = outputString.replace(/^```json\n/, '').replace(/\n```$/, '');
+          } else if (outputString.startsWith('json\n')) {
+            // Old format
+            jsonString = outputString.replace(/^json\n/, '');
+          } else {
+            // Try to use the string as is
+            jsonString = outputString;
+          }
+          
+          console.log('JSON string to parse:', jsonString);
+          
+          const parsedData: CurrentPositionsResponseContent = JSON.parse(jsonString);
+          console.log('Parsed data:', parsedData);
+          
+          // Map the net positions to table data format, only including fields that exist
           this.positionsData = parsedData.net.map(position => ({
-            tradingsymbol: position.tradingsymbol,
-            exchange: position.exchange,
-            quantity: position.quantity,
-            average_price: position.average_price,
-            close_price: position.close_price,
-            last_price: position.last_price,
-            pnl: position.pnl,
-            buy_quantity: position.buy_quantity,
-            buy_price: position.buy_price
+            tradingsymbol: position.tradingsymbol || '',
+            exchange: position.exchange || '',
+            quantity: position.quantity || 0,
+            average_price: position.average_price || 0,
+            last_price: position.last_price || 0,
+            pnl: position.pnl || 0,
+            buy_quantity: position.buy_quantity || 0,
+            buy_price: position.buy_price || 0
           }));
           
+          console.log('Mapped positions data:', this.positionsData);
           this.isLoadingPositions = false;
         } catch (error) {
           console.error('Error parsing positions data:', error);
-          this.positionsError = 'Failed to parse positions data';
+          console.error('Raw response:', response);
+          this.positionsError = 'Failed to parse positions data: ' + (error as Error).message;
           this.isLoadingPositions = false;
         }
       },

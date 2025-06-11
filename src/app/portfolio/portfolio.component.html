@@ -40,7 +40,6 @@
                             <th>Exchange</th>
                             <th>Quantity</th>
                             <th>Avg Price</th>
-                            <th>Close Price</th>
                             <th>Last Price</th>
                             <th>P&L</th>
                             <th>Buy Qty</th>
@@ -53,7 +52,6 @@
                             <td>{{ position.exchange }}</td>
                             <td class="quantity">{{ position.quantity }}</td>
                             <td class="price">₹{{ position.average_price | number:'1.2-2' }}</td>
-                            <td class="price">₹{{ position.close_price | number:'1.2-2' }}</td>
                             <td class="price">₹{{ position.last_price | number:'1.2-2' }}</td>
                             <td class="pnl" [ngClass]="{ 'positive': position.pnl > 0, 'negative': position.pnl < 0 }">
                                 ₹{{ position.pnl | number:'1.2-2' }}
@@ -72,6 +70,6 @@
 
     </div>
 
-    <app-chat></app-chat>>
+    <!-- <app-chat></app-chat> -->
 
 </div>

@@ -1,7 +1,8 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';// Import the chat service
+import { ChatService } from '../services/chatService/chat.service';
 
 interface ChatMessage {
   text: string;
@@ -15,12 +16,13 @@ interface ChatMessage {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
   standalone: true,
-
 })
+export class ChatComponent {
 
-export class ChatComponent{
-
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private chatService: ChatService // Inject the chat service
+  ) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
@@ -46,7 +48,7 @@ export class ChatComponent{
   sendMessage(): void {
     const message = this.currentMessage.trim();
 
-    if (message) {
+    if (message && !this.loading) {
       // Add user message
       this.messages.push({
         text: message,
@@ -57,16 +59,32 @@ export class ChatComponent{
       // Clear input
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
+      this.loading = true; // Set loading to prevent multiple requests
 
-      //Simulate bot response
-      setTimeout(() => {
-        this.messages.push({
-          text: `Thanks for your message: "${message}". How else can I assist you?`,
-          isUser: false,
-          timestamp: new Date(),
-        });
-        this.shouldScrollToBottom = true;
-      }, 1000);
+      // Call the API service
+      this.chatService.sendMessage(message).subscribe({
+        next: (response) => {
+          // Add bot response from API
+          this.messages.push({
+            text: response?.output,
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error sending message:', error);
+          // Add error message
+          this.messages.push({
+            text: 'Sorry, I encountered an error. Please try again.',
+            isUser: false,
+            timestamp: new Date(),
+          });
+          this.shouldScrollToBottom = true;
+          this.loading = false;
+        }
+      });
     }
   }
 
@@ -104,4 +122,4 @@ export class ChatComponent{
       console.error('Error scrolling to bottom:', err);
     }
   }
-} 
+}
