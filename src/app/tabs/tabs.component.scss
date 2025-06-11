@@ -1,13 +1,27 @@
 .tabs {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  padding: 1rem 2rem;
+  position: relative;
   box-sizing: border-box;
-  cursor: pointer;
 }
 
-.tabs a {
+.logo {
+  height: 80px;
+  width: auto;
+}
+
+.nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
   text-decoration: none;
   color: #333;
   padding: 0.5rem 1rem;
@@ -15,10 +29,8 @@
   cursor: pointer;
 }
 
-.tabs a.active {
+.nav-links a.active {
   font-weight: bold;
   border-bottom: 2px solid #007bff;
   color: #007bff;
-  cursor: pointer;
 }
-
