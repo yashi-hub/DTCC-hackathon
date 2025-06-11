@@ -206,3 +206,14 @@
     }
   }
 }
+
+.charts-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  padding: 20px;
+}
+
+.chart-item {
+  text-align: center;
+}
