@@ -1,9 +1,7 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { TabsComponent } from '../tabs/tabs.component';
-import { AgGridModule } from 'ag-grid-angular';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { N8nService } from '../services/n8n/n8n.service';
 
 interface ChatMessage {
   text: string;
@@ -12,22 +10,23 @@ interface ChatMessage {
 }
 
 @Component({
-  selector: 'app-performance',
-  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule],
-  templateUrl: './performance.component.html',
-  styleUrls: ['./performance.component.scss'],
+  selector: 'app-chat',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss'],
   standalone: true,
 
 })
 
-export class PerformanceComponent {
+export class ChatComponent{
+
+  constructor(private router: Router) { }
 
   @Output() tabChanged = new EventEmitter<{ tab: string; clientId: string | null }>();
 
   @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
 
-  constructor(private n8nService: N8nService) {}
-
+  loading: boolean = false;
   clientId: string = '';
 
   messages: ChatMessage[] = [
@@ -59,7 +58,7 @@ export class PerformanceComponent {
       this.currentMessage = '';
       this.shouldScrollToBottom = true;
 
-      // Simulate bot response
+      //Simulate bot response
       setTimeout(() => {
         this.messages.push({
           text: `Thanks for your message: "${message}". How else can I assist you?`,

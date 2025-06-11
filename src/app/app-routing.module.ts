@@ -4,7 +4,6 @@ import { LoginComponent } from './login/login.component';
 import { LeadsComponent } from './leads/leads.component';
 import { CustomersComponent } from './customers/customers.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
-import { PerformanceComponent } from './performance/performance.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -12,7 +11,6 @@ const routes: Routes = [
   { path: 'leads', component: LeadsComponent },
   { path: 'customers', component: CustomersComponent },
   { path: 'portfolio', component: PortfolioComponent },
-  { path: 'performance', component: PerformanceComponent },
 ];
 
 @NgModule({

@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ClientsService } from '../services/clientsService/clients.service';
 import { N8nService } from '../services/n8n/n8n.service';
 import { LoaderComponent } from '../loader/loader.component';
+import { ChatComponent } from '../chat/chat.component';
 
 interface ChatMessage {
   text: string;
@@ -28,7 +29,7 @@ export interface Client {
 
 @Component({
   selector: 'app-customers',
-  imports: [TabsComponent, AgGridModule, CommonModule, FormsModule, AgGridModule, LoaderComponent],
+  imports: [TabsComponent, AgGridModule, CommonModule, FormsModule, AgGridModule, LoaderComponent, ChatComponent],
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
   standalone: true,

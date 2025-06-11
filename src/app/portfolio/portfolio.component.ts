@@ -5,6 +5,7 @@ import { TabsComponent } from '../tabs/tabs.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { N8nService } from '../services/n8n/n8n.service';
+import { ChatComponent } from '../chat/chat.component';
 
 interface ChatMessage {
   text: string;
@@ -14,7 +15,7 @@ interface ChatMessage {
 
 @Component({
   selector: 'app-portfolio',
-  imports: [TabsComponent, CommonModule, FormsModule,NgChartsModule],
+  imports: [TabsComponent, CommonModule, FormsModule,NgChartsModule,ChatComponent],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss'],
   standalone: true,

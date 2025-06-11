@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MessageService } from '../services/messageService/message.service';
 import { LeadsServiceTs } from '../services/leadsService/leads.service.ts';
 import { LoaderComponent } from '../loader/loader.component';
+import { ChatComponent } from '../chat/chat.component';
 
 interface ChatMessage {
   text: string;
@@ -32,7 +33,7 @@ interface Lead {
 
 @Component({
   selector: 'app-leads',
-  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule, LoaderComponent],
+  imports: [TabsComponent, CommonModule, FormsModule, AgGridModule, MatSnackBarModule, LoaderComponent, ChatComponent],
   templateUrl: './leads.component.html',
   styleUrls: ['./leads.component.scss'],
   standalone: true,
