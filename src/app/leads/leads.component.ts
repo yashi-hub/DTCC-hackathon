@@ -249,9 +249,8 @@ export class LeadsComponent implements OnInit {
       ).join(', ');
 
       const selectedNumber = this.selectedLeads.map(lead => lead.lead_contact_number).join(', ');
-
-      alert(`Triggering KYC for: ${selectedNames}`);
-
+      
+      
       // Add KYC logic here
       this.n8nService.getN8nData(selectedNumber).subscribe({
         next: (response: any) => {
