@@ -13,7 +13,7 @@
       <ag-grid-angular
         class="ag-theme-quartz"
         style="width: auto; min-width: 1500px;"
-        [style.height.px]="(rowData?.length || 300) * 100"
+        [style.height.px]="(rowData.length || 300) * 100"
         [rowData]="rowData"
         [columnDefs]="columnDefs"
         [gridOptions]="{ rowHeight: 50, headerHeight: 50 }"
